@@ -2,9 +2,8 @@
   "name": "posts-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.ts"
+    "dev": "nodemon src/index.ts"
   },
   "keywords": [],
   "author": "",
