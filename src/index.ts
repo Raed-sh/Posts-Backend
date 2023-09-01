@@ -1,4 +1,4 @@
-// src/app.ts
+// src/index.ts
 
 import express, { Request, Response } from "express";
 import multer from "multer";
@@ -9,7 +9,7 @@ import path from "path";
 
 // Initialize
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // Setup Multer
 const upload = multer({ dest: "uploads/" });
@@ -25,7 +25,7 @@ const chunkArray = (array: any[], size: number): any[][] => {
 
 // CSV Writer
 const csvWriter = createObjectCsvWriter({
-  path: "out.csv",
+  path: "downloads/out.csv",
   header: [
     { id: "name", title: "NAME" },
     // Add other field headers that you expect in your CSV
@@ -35,11 +35,11 @@ const csvWriter = createObjectCsvWriter({
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_, res: Response) => {
   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
 
-app.post("/upload", upload.single("file"), (req, res) => {
+app.post("/upload", upload.single("file"), (req: Request, res: Response) => {
   if (!req.file) return;
   const filePath = req.file.path;
   const readStream = fs.createReadStream(filePath);
@@ -69,13 +69,13 @@ app.post("/upload", upload.single("file"), (req, res) => {
       // Write the processed data to a new CSV
       await csvWriter.writeRecords(processedData);
 
-      const filePath = "out.csv";
+      const filePath = "downloads/out.csv";
       res.download(filePath);
     });
 });
 
 app.get("/download", (req, res) => {
-  const filePath = "out.csv";
+  const filePath = "downloads/out.csv";
   res.download(filePath);
 });
 
