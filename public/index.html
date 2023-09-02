@@ -46,6 +46,30 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        /* Loading UI styles */
+        #loading {
+            display: none;
+        }
+
+        .loading-active #loading {
+            display: inline-block;
+        }
+
+        /* Rotating loader */
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -61,8 +85,51 @@
                 <input type="file" name="file" accept=".csv"/>
                 <input type='submit' value='Upload' />
             </form>
+            <!-- Loading UI -->
+            <div id="loading">
+                <div class="loader"></div>
+                Processing...
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('uploadForm');
+            
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                document.body.classList.add("loading-active");
+
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    }
+                    throw new Error('Network response was not ok.');
+                }).then(blob => {
+                    document.body.classList.remove("loading-active");
+
+                    // Handle the blob (e.g., create a download link)
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${new Date().toJSON().slice(0, 10)}-out.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                }).catch((error) => {
+                    console.error('Fetch error:', error);
+                    document.body.classList.remove("loading-active");
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
