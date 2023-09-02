@@ -48,7 +48,6 @@ Here are the quotes:
 ${quotes.map((q, idx) => `${idx + 1}."${q.Quote}" by ${q.Author}`).join("\n")}
 `;
 
-  console.log(_prompt);
   try {
     console.log(chalk.blue("Making API call to OpenAI..."));
     // Make the API call
@@ -67,7 +66,6 @@ ${quotes.map((q, idx) => `${idx + 1}."${q.Quote}" by ${q.Author}`).join("\n")}
     // Process the response
     const outputText =
       completion.choices[0].message.content?.trim().split("\n") || [];
-    console.log(completion.choices[0].message.content);
     console.log(outputText.length);
 
     console.log(chalk.blue("Processing OpenAI API response..."));
