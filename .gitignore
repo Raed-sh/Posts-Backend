@@ -3,3 +3,4 @@ test.ts
 downloads/*
 uploads/*
 .env
+package-lock.json
